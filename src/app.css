@@ -1,1 +1,21 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+html,
+body {
+	height: 100%;
+}
+
+@layer base {
+	button {
+		@apply cursor-pointer rounded-md bg-[#971b2f] font-bold text-white;
+	}
+
+	button:disabled {
+		@apply cursor-default opacity-50;
+	}
+
+	input,
+	textarea {
+		@apply w-full rounded border border-gray-300 p-2;
+	}
+}
