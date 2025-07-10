@@ -14,7 +14,6 @@
   let speechComp = $state(null);
 
   function handleSpeech(transcript) {
-    console.log("test", transcript);
     searchRecipe = transcript.toLowerCase();
 
     if (shownRecipes?.length) {
@@ -158,7 +157,7 @@
             <strong>Plating Instructions:</strong>
             <ol class="list-decimal pl-4">
               {#each currentRecipe.plating as step}
-                <li style={`color: ${stations[step.station].color};`}>
+                <li style={`color: ${stations[step.station - 1].color};`}>
                   {step.instruction}
                 </li>
               {/each}
@@ -193,14 +192,18 @@
             <div class="flex h-full w-full">
               <div class="flex w-full flex-1 flex-row">
                 <div class="justify-left flex flex-1 flex-col items-start p-2">
-                  {#each recipe.ingredients as ingredient}
-                    <div
-                      style={`color: ${stations[ingredient.station].color};`}
-                      class={`text-sm`}
-                    >
-                      <strong>{ingredient.name}</strong> &ndash;{ingredient.qty}
-                    </div>
-                  {/each}
+					<ul>
+						{#each recipe.ingredients as ingredient}
+						<li>
+							<div
+							style={`color: ${stations[ingredient.station].textColor}; background-color: ${stations[ingredient.station].color};`}
+							class={`text-xs p-1 rounded mb-1`}
+							>
+							<strong>{ingredient.name}</strong> &ndash;{ingredient.qty}
+							</div>
+						</li>
+						{/each}
+					</ul>
                 </div>
               </div>
               <div
