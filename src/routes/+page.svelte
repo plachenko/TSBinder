@@ -3,6 +3,7 @@
   import Logo from "$lib/assets/logo.jpg";
   import SpeechRecognition from "$lib/components/SpeechRecognition.svelte";
   import { stations } from "$lib/assets/stations";
+  import { fly } from "svelte/transition";
 
   import { recipes } from "$lib/assets/recipes.js";
 
@@ -54,11 +55,21 @@
             <img src={Logo} alt="Logo" class="m-1 h-12 w-12 rounded-md" />
           </button>
         </div>
-        <h1 class="flex-1 text-center text-2xl font-bold">
+        <h1 class="flex-1 relative text-center text-2xl font-bold">
           {#if currentRecipe}
-            {currentRecipe.title}
+            <span
+              class="absolute w-full left-0 top-[-15px]"
+              transition:fly={{ y: -20 }}
+            >
+              {currentRecipe.title}
+            </span>
           {:else}
-            Recipe Book
+            <span
+              class="absolute w-full left-0 top-[-15px]"
+              transition:fly={{ y: 20 }}
+            >
+              Recipe Book
+            </span>
           {/if}
         </h1>
         {#if !showAdd}
@@ -184,26 +195,33 @@
               currentRecipe = recipe;
             }}
           >
-            <div
-              class="mb-3 w-full border-b text-center text-lg font-semibold text-black"
-            >
+            <div class="mb-2 w-full text-center text-black text-2xl uppercase">
               {recipe.title}
             </div>
             <div class="flex h-full w-full">
               <div class="flex w-full flex-1 flex-row">
-                <div class="justify-left flex flex-1 flex-col items-start p-2">
-					<ul>
-						{#each recipe.ingredients as ingredient}
-						<li>
-							<div
-							style={`color: ${stations[ingredient.station].textColor}; background-color: ${stations[ingredient.station].color};`}
-							class={`text-xs p-1 rounded mb-1`}
-							>
-							<strong>{ingredient.name}</strong> &ndash;{ingredient.qty}
-							</div>
-						</li>
-						{/each}
-					</ul>
+                <div class="flex flex-1 flex-col items-start w-full mr-1">
+                  <ul class="w-full">
+                    {#each recipe.ingredients as ingredient}
+                      <li>
+                        <div
+                          style={`color: ${stations[ingredient.station].textColor}; background-color: ${stations[ingredient.station].color};`}
+                          class={`text-xs p-1 rounded mb-1 flex`}
+                        >
+                          <div class="flex-1">
+                            <strong class="flex-1">{ingredient.name}</strong>
+                          </div>
+                          <div
+                            class="flex items-center rounded-[3px] px-1 bg-white/20"
+                          >
+                            <span>
+                              {ingredient.qty}
+                            </span>
+                          </div>
+                        </div>
+                      </li>
+                    {/each}
+                  </ul>
                 </div>
               </div>
               <div
