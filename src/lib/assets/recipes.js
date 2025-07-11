@@ -10,9 +10,9 @@ export let recipes = [
 				{ name: 'Jalapeno Ranch Dressing', qty: '1/4', station: 1 },
 				{ name: 'Avocado', qty: '1/2', station: 1 },
 				{ name: 'Sirloin Steak', qty: '1 ea', station: 2 },
-				{ name: 'Tortilla Strips', qty: '1.5 oz', station: 2 },
-				{ name: 'Maldon Salt', qty: '.5 tsp', station: 2 },
-				{ name: 'Micro Babes', qty: '.1 oz', station: 2 }
+				{ name: 'Tortilla Strips', qty: '1.5 oz', station: 0 },
+				{ name: 'Maldon Salt', qty: '.5 tsp', station: 0 },
+				{ name: 'Micro Babes', qty: '.1 oz', station: 0 }
 			],
 			plating: [
 				{ instruction: 'Slice steak against the grain', station: 2 },

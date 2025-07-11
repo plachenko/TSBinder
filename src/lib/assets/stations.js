@@ -2,16 +2,16 @@ export let stations = [
 		{
 			name: 'expo',
 			color: '#000000', // Fresh green (like cutting boards)
-			textColor: '#000000' // Black text for contrast
+			textColor: '#FFFFFF' // Black text for contrast
 		},
 		{
 			name: 'pantry',
-			color: 'rgba(98, 160, 82, .6)',
+			color: 'rgba(98, 160, 82, .5)',
 			textColor: 'rgb(55, 109, 41)',
 		},
 		{
 			name: 'oven',
-			color: '#F44336', // Alert red (for heat warning)
+			color: 'rgba(180, 28, 28, 0.5)', // Alert red (for heat warning)
 			textColor: '#FFFFFF' // White text
 		},
 		{

@@ -58,7 +58,7 @@
         <h1 class="flex-1 relative text-center text-2xl font-bold">
           {#if currentRecipe}
             <span
-              class="absolute w-full left-0 top-[-15px]"
+              class="absolute w-full left-0 top-[-15px] "
               transition:fly={{ y: -20 }}
             >
               {currentRecipe.title}
@@ -145,16 +145,14 @@
         <div class="flex flex-1 justify-center">
           Created: {currentRecipe.created}
         </div>
-        <div class="flex flex-1 justify-center border-l-2">
-          Created: {currentRecipe.created}
-        </div>
         {#if currentRecipe.edited}
           <div class="flex-1">Edited: {currentRecipe?.edited}</div>
         {/if}
       </div>
-      <div class="p-2">
+      <div class="p-2 flex gap-2 relative overflow-hidden">
         <div
-          class="mb-4 flex w-full flex-col rounded bg-slate-300 p-4 shadow-md"
+          transition:fly={{ x: -20 }}
+          class="flex flex-1 w-full flex-col rounded bg-slate-300 p-4 shadow-md"
         >
           <div class="mb-4">
             <strong>Ingredients:</strong>
@@ -175,6 +173,7 @@
             </ol>
           </div>
         </div>
+        <div transition:fly={{ x: 20 }} class="bg-slate-600 flex-1 rounded-md border-2 font-bold text-white justify-center items-center flex">No Image</div>
       </div>
     {:else if shownRecipes.length == 0}
       <div
@@ -186,7 +185,8 @@
       </div>
     {:else}
       <div
-        class="absolute top-0 grid w-full grid-cols-1 gap-1 border-t-2 p-2 px-2 sm:grid-cols-2 md:grid-cols-3"
+        transition:fly={{ y: -20 }}
+        class="absolute top-0 grid w-full grid-cols-1 gap-1 p-2 px-2 sm:grid-cols-2 md:grid-cols-3"
       >
         {#each shownRecipes as recipe}
           <button
@@ -195,7 +195,7 @@
               currentRecipe = recipe;
             }}
           >
-            <div class="mb-2 w-full text-center text-black text-2xl uppercase">
+            <div class="mb-3 text-slate-600/80 tracking-wider font-medium w-full text-center text-2xl uppercase">
               {recipe.title}
             </div>
             <div class="flex h-full w-full">
