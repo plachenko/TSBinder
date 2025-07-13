@@ -1,7 +1,7 @@
 export let stations = [
 		{
 			name: 'expo',
-			color: '#000000', // Fresh green (like cutting boards)
+			color: 'rgba(0, 0, 0, .7)',
 			textColor: '#FFFFFF' // Black text for contrast
 		},
 		{

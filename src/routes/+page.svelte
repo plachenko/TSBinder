@@ -13,6 +13,13 @@
 
   let shownRecipes = $state([]);
   let speechComp = $state(null);
+  let searchType = $state(0);
+
+  let searchTypes = [
+    { name: "Recipe"},
+    // { name: "Station"},
+    { name: "Ingredient"},
+  ];
 
   function handleSpeech(transcript) {
     searchRecipe = transcript.toLowerCase();
@@ -110,11 +117,16 @@
               class="bg-grey-100 flex w-full flex-row items-center justify-between gap-2 rounded p-1 shadow-md"
             >
               <div class="relative flex flex-1 gap-1">
-                <div class="relative flex w-full items-center">
+                <div class="relative gap-1 flex w-full items-center">
+                  <button onclick={() => {
+                      searchRecipe = "";
+                      searchType = (searchType + 1) % searchTypes.length;
+                    }}
+                    class="p-2">{searchTypes[searchType].name}</button>
                   <input
                     bind:value={searchRecipe}
                     type="text"
-                    placeholder="Search recipes..."
+                    placeholder={`Search ${searchTypes[searchType].name}s...`}
                     class="w-full rounded border bg-[#CCC] p-2 text-black"
                   />
                   {#if searchRecipe !== ""}
@@ -180,7 +192,7 @@
         class="place-center flex h-full w-full items-center justify-center text-white"
       >
         <div class="user-select-none rounded-md bg-slate-400/40 p-2">
-          No Recipes
+          No {searchTypes[searchType].name} found.
         </div>
       </div>
     {:else}
@@ -203,10 +215,11 @@
                 <div class="flex flex-1 flex-col items-start w-full mr-1">
                   <ul class="w-full">
                     {#each recipe.ingredients as ingredient}
-                      <li>
+                      <li class="flex gap-1 my-1 border-b-2 ml-[20px] items-center border-slate-300 relative">
+                          <div class="bg-red-400 rounded-md absolute left-[-20px] p-1">3</div>
                         <div
                           style={`color: ${stations[ingredient.station].textColor}; background-color: ${stations[ingredient.station].color};`}
-                          class={`text-xs p-1 rounded mb-1 flex`}
+                          class={`text-xs p-1 rounded mb-1 flex w-full`}
                         >
                           <div class="flex-1">
                             <strong class="flex-1">{ingredient.name}</strong>
