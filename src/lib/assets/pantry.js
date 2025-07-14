@@ -157,8 +157,8 @@ let prepArr = [
     }
 ];
 
-export let binderChecklist = {
+export const PantryChecklist = {
     opening: openingChecklist,
-    closing: closingChecklist,
-    prep: prepArr
+    prep: prepArr,
+    closing: closingChecklist
 }

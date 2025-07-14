@@ -5,6 +5,8 @@
   import { stations } from "$lib/assets/stations";
   import { fly } from "svelte/transition";
 
+  import { PantryChecklist } from "$lib/assets/pantry";
+
   import { recipes } from "$lib/assets/recipes.js";
 
   let currentRecipe = $state(null);
@@ -12,6 +14,11 @@
   let searchRecipe = $state("");
   let setBinder = $state(false);
 
+  let checklistArr = $state([
+    "opening",
+    "prep",
+    "closing",
+  ]);
   let checklistIdx = $state(0);
 
   let showChecklist = $state(false);
@@ -50,6 +57,7 @@
   });
 
   onMount(() => {
+    console.log(PantryChecklist)
     shownRecipes = recipes;
   });
 </script>
@@ -120,18 +128,24 @@
                     <span>TSQ Salem Binder</span>
                   </div>
                 {:else}
-                  <div class="flex">
-                    <div class="border-r-2 pr-2 mr-2">
-                      {stations[stationBinderInt].emoji}
-                    </div>
-                    {stations[stationBinderInt].name.toUpperCase()} Binder
-                  </div>
+                <div class="flex">
+                  
+                  <div class="border-r-2 pr-2 mr-2">
+                  {stations[stationBinderInt].emoji} 
+                  </div> 
+                  <span class="underline mr-1 capitalize">{stations[stationBinderInt].name}</span> 
+                  {#if showChecklist}
+                  <span>Checklist</span>
+                  {:else}
+                    Binder
+                  {/if}
+                </div>
                 {/if}
               </button>
             </span>
           {/if}
         </h1>
-        {#if !showAdd}
+        {#if !showAdd && stationBinderInt >= 0}
           <button
             style={`background-color: ${stationBinderInt >= 0 ? stations[stationBinderInt].color : "#971B2F"}`}
             class={`mr-1 rounded ${showChecklist ? "border-2 border-white" : ""} bg-[#971B2F] p-2 text-white`}
@@ -175,7 +189,7 @@
                   <div class="relative gap-1 flex w-full items-center">
                     {#if showChecklist}
                       <div class="flex w-full gap-2">
-                        {#each ["opening", "prep", "closing"] as item, idx}
+                        {#each checklistArr as item, idx}
                           <button
                             style={`background-color: ${stations[stationBinderInt]?.color};`}
                             class={`${checklistIdx == idx ? "border-2 border-white" : ""} flex-1 p-1`}
@@ -241,9 +255,9 @@
             class={`${stationBinderInt == -1 ? "border-2 border-white/60" : "hover:border-2 border-white/60"} w-full h-full`}
           >
             <div>
-              <div class="px-6 text-3xl border-r-2 flex">
+              <div class="px-6 text-3xl border-r-2 flex justify-center ">
                 <div
-                  class="flex items-center gap-2 border-r-2 border-white pr-2 mr-2"
+                  class="flex items-center gap-2 pr-1 mr-1"
                 >
                   <img src={Logo} alt="Logo" class="size-7 rounded-md" />
                 </div>
@@ -274,7 +288,41 @@
       </div>
     {:else if showChecklist}
       <div class="relative w-full h-full overflow-y-auto">
-        <div class="bg-slate-700 h-[400px] w-full absolute"></div>
+        <div class="bg-slate-200 w-full absolute flex flex-col gap-2 p-2">
+          <form>
+            {#each Object.keys(PantryChecklist) as checkItem, checkItemIdx}
+              <fieldset class={`border-2 ${checklistIdx !== checkItemIdx ? "hidden" : ""}`}>
+                {#if checklistIdx !== checkItemIdx}
+                  <button
+                    class="text-lg font-bold text-slate-600 hover:text-slate-800"
+                    onclick={() => {
+                      checklistIdx = checkItemIdx;
+                    }}
+                  >
+                    {checkItem} Checklist
+                  </button>
+                {/if}
+                <legend class="text-lg font-bold ml-2 capitalize">
+                  {checkItem} Checklist
+                </legend>
+                {#each PantryChecklist[checkItem] as item, idx}
+                  <div class="flex p-4 bg-slate border-b-2 border-slate-300">
+                    {#if checkItemIdx == 1}
+                    <input type="checkbox" style="width: 20px; margin-right: 10px;" id={checklistArr[checklistIdx]+'checkItem_'+idx} name={checklistArr[checklistIdx]+'checkItem_'+idx} value={checkItem}>
+                    <label class="flex-1 " for={checklistArr[checklistIdx]+'checkItem_'+idx}>{item.item}</label>
+                    <input type="range" min="0" max="5" value={item.qty} class="flex-1" id={checklistArr[checklistIdx]+'checkItem_qty_'+idx} name={checklistArr[checklistIdx]+'checkItem_qty_'+idx}>
+                    {:else}
+                    <input type="checkbox" style="width: 20px; margin-right: 10px;" id={checklistArr[checklistIdx]+'checkItem_'+idx} name={checklistArr[checklistIdx]+'checkItem_'+idx} value={checkItem}>
+                    <label class="flex-1 " for={checklistArr[checklistIdx]+'checkItem_'+idx}>{item}</label>
+                    {/if}  
+                  </div>
+
+                {/each}
+            </fieldset>
+            {/each}
+
+          </form>
+        </div>
       </div>
     {:else if currentRecipe}
       <div class="flex bg-slate-400 px-3 py-1 text-sm">
