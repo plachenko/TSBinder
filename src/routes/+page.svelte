@@ -10,6 +10,7 @@
   let currentRecipe = $state(null);
   let showAdd = $state(false);
   let searchRecipe = $state("");
+  let setBinder = $state(false);
 
   let shownRecipes = $state([]);
   let speechComp = $state(null);
@@ -20,6 +21,8 @@
     // { name: "Station"},
     { name: "Ingredient"},
   ];
+
+  let stationBinderInt = $state(-1);
 
   function handleSpeech(transcript) {
     searchRecipe = transcript.toLowerCase();
@@ -32,6 +35,7 @@
   $effect(() => {
     shownRecipes = recipes.filter((recipe) => {
       const searchTerm = searchRecipe;
+      
       return (
         recipe.title.toLowerCase().includes(searchTerm) ||
         recipe.ingredients.some((ingredient) =>
@@ -56,7 +60,7 @@
       <div class=" align-center flex w-full flex-1 items-center">
         <div class="border-r-2 border-[#971B2F] pr-1">
           <button
-            onclick={() => (currentRecipe = null)}
+            onclick={() => {currentRecipe = null; setBinder = false; searchRecipe = ""; stationBinderInt = -1;}}
             class="flex items-center bg-[rgba(41,40,40,0.99)]"
           >
             <img src={Logo} alt="Logo" class="m-1 h-12 w-12 rounded-md" />
@@ -64,18 +68,46 @@
         </div>
         <h1 class="flex-1 relative text-center text-2xl font-bold">
           {#if currentRecipe}
-            <span
-              class="absolute w-full left-0 top-[-15px] "
+            <div
+              class="flex absolute w-full left-0 top-[-15px] justify-center"
               transition:fly={{ y: -20 }}
             >
-              {currentRecipe.title}
-            </span>
+            <div class=" h-full flex gap-2 relative">
+                <button style={`background-color: ${stations[stationBinderInt]?.color};`} onclick={() => {setBinder = !setBinder;}} class="p-1 absolute top-[-5px] left-[-50px] border-2 border-white/70">
+                  
+                {#if stationBinderInt >= 0}
+                  {stations[stationBinderInt]?.emoji}
+                {:else}
+                  <img src={Logo} alt="Logo" class="size-7 rounded-md" />
+                {/if}
+                </button>
+                <span>{currentRecipe.title}</span>
+            </div>
+        </div>
           {:else}
             <span
-              class="absolute w-full left-0 top-[-15px]"
+              class="absolute w-full left-0 top-[-26px]"
               transition:fly={{ y: 20 }}
             >
-              Recipe Book
+              <button style={`
+                  background-color: ${stationBinderInt >= 0 ?stations[stationBinderInt].color : "#971B2F"}; 
+                  color: ${stationBinderInt >= 0 ?stations[stationBinderInt].textColor : "#FFF"}; 
+                  `} 
+                  onclick={() => {setBinder = !setBinder;}} class="p-2 border-2 border-white/70 bg-[#971B2F] text-white rounded">
+                {#if stationBinderInt == -1}
+                  <div class="flex items-center gap-2">
+                    <img src={Logo} alt="Logo" class="size-7 rounded-md" />
+                    <span>TSQ Salem Binder</span>
+                  </div>
+                {:else}
+                <div class="flex">
+                  
+                  <div class="border-r-2 pr-2 mr-2">
+{stations[stationBinderInt].emoji} 
+                  </div> {stations[stationBinderInt].name.toUpperCase()} Binder
+                </div>
+                {/if}
+              </button>
             </span>
           {/if}
         </h1>
@@ -96,6 +128,7 @@
             {/each}
           </div>
         {/if}
+        {#if !setBinder}
         {#if currentRecipe}
           <div class="flex gap-2 border-t-2 border-white py-1">
             <button
@@ -148,11 +181,43 @@
             </div>
           </div>
         {/if}
+        {/if}
       </div>
     </div>
   </div>
   <div class="relative h-full w-full overflow-y-auto bg-slate-500">
-    {#if currentRecipe}
+    {#if setBinder}
+      <div class="flex flex-col bg-slate-800 h-full" transition:fly={{ y: -70 }}>
+          <div onclick={() => {stationBinderInt = -1; setBinder = false;}} class="flex-1 items-center p-1">
+            <button class={`${stationBinderInt == -1 ? "border-2 border-white/60" : "hover:border-2 border-white/60"} w-full h-full`}>
+              <div>
+                <div class="px-6 text-3xl border-r-2 flex">
+                  <div class="flex items-center gap-2 border-r-2 border-white pr-2 mr-2">
+                    <img src={Logo} alt="Logo" class="size-7 rounded-md" />
+                    
+                  </div>
+                  <span>TSQ Salem Binder</span>
+              </div>
+            </button>
+          </div>
+        {#each stations as station, idx}
+          <div class="flex-1 items-center p-2">
+            <button onclick={() => {stationBinderInt = idx; setBinder = false;}} style={`background-color: ${station.color}; color: ${station.textColor};`} class={`${idx == stationBinderInt ? "border-2 border-white/60" : ""} hover:border-2 border-white/60 w-full h-full items-center flex flex-row`}>
+              <div class="px-6 text-3xl border-r-2">
+                {station.emoji}
+              </div>
+              <div class="flex-1">
+
+                {station.name.toUpperCase()}
+              </div>
+            </button>
+          </div>
+        {/each}
+      </div>
+    
+    {:else}
+
+        {#if currentRecipe}
       <div class="flex bg-slate-400 px-3 py-1 text-sm">
         <div class="flex flex-1 justify-center">
           Created: {currentRecipe.created}
@@ -247,5 +312,9 @@
         {/each}
       </div>
     {/if}
+
+    {/if}
+    
+
   </div>
 </div>
