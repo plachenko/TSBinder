@@ -1,3 +1,5 @@
+import { PantryChecklist } from "./pantry";
+
 export let stations = [
 		{
 			name: 'expo',
@@ -10,6 +12,7 @@ export let stations = [
 			emoji: '🥗',
 			color: 'rgba(98, 160, 82, .5)',
 			textColor: '#FFF',
+			checklist: PantryChecklist
 		},
 		{
 			name: 'oven',

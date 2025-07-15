@@ -9,17 +9,17 @@ export let recipes = [
 				{ name: 'Grape Tomatoes', qty: '1/4', station: 1 },
 				{ name: 'Jalapeno Ranch Dressing', qty: '1/4', station: 1 },
 				{ name: 'Avocado', qty: '1/2', station: 1 },
-				{ name: 'Sirloin Steak', qty: '1 ea', station: 2 },
+				{ name: 'Sirloin Steak', qty: '1 ea', station: 3 },
 				{ name: 'Tortilla Strips', qty: '1.5 oz', station: 0 },
 				{ name: 'Maldon Salt', qty: '.5 tsp', station: 0 },
 				{ name: 'Micro Babes', qty: '.1 oz', station: 0 }
 			],
 			plating: [
-				{ instruction: 'Slice steak against the grain', station: 2 },
+				{ instruction: 'Slice steak against the grain', station: 3 },
 				{ instruction: 'Arrange avocado slices around plate', station: 1 },
 				{ instruction: 'Top with thinly sliced red onion', station: 2 },
-				{ instruction: 'Garnish with cilantro leaves', station: 2 },
-				{ instruction: 'Drizzle with lime juice', station: 2 }
+				{ instruction: 'Garnish with cilantro leaves', station: 3 },
+				{ instruction: 'Drizzle with lime juice', station: 3 }
 			],
 			created: '2023-05-15'
 		},

@@ -13,6 +13,7 @@
   let showAdd = $state(false);
   let searchRecipe = $state("");
   let setBinder = $state(false);
+  let showAllStationIng = $state(false);
 
   let checklistArr = $state([
     "opening",
@@ -33,6 +34,8 @@
     { name: "Ingredient" },
   ];
 
+  let recipeStationsArr = $state([]);
+
   let stationBinderInt = $state(-1);
 
   function handleSpeech(transcript) {
@@ -43,7 +46,17 @@
     }
   }
 
+  function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
+
   $effect(() => {
+    if(currentRecipe !== null){
+      recipeStationsArr = currentRecipe.ingredients.map((ing) => stations[ing.station].name).filter(onlyUnique)
+    }else{
+      recipeStationsArr = [];
+    }
+
     shownRecipes = recipes.filter((recipe) => {
       const searchTerm = searchRecipe;
 
@@ -57,7 +70,6 @@
   });
 
   onMount(() => {
-    console.log(PantryChecklist)
     shownRecipes = recipes;
   });
 </script>
@@ -145,7 +157,17 @@
             </span>
           {/if}
         </h1>
-        {#if !showAdd && stationBinderInt >= 0}
+        {#if stationBinderInt >= 0}
+        <button class="p-2 mr-2" onclick={() => {showAllStationIng = !showAllStationIng}}>
+
+          {#if showAllStationIng}
+          👁️
+          {:else}
+          👁️‍🗨️
+          {/if}
+        </button>
+        {/if}
+        {#if !showAdd && stationBinderInt >= 0 && stations[stationBinderInt].checklist}
           <button
             style={`background-color: ${stationBinderInt >= 0 ? stations[stationBinderInt].color : "#971B2F"}`}
             class={`mr-1 rounded ${showChecklist ? "border-2 border-white" : ""} bg-[#971B2F] p-2 text-white`}
@@ -157,6 +179,8 @@
         {/if}
       </div>
       <div>
+        <!--
+        -- TODO Possibly remove this.
         {#if showAdd}
           <div class="flex flex-col gap-2">
             {#each ["recipe", "station", "ingredient"] as option}
@@ -164,6 +188,8 @@
             {/each}
           </div>
         {/if}
+        -->
+        
         {#if !setBinder}
           {#if currentRecipe && !showChecklist}
             <div class="flex gap-2 border-t-2 border-white py-1">
@@ -243,9 +269,10 @@
   <div class="relative h-full w-full overflow-y-auto bg-slate-500">
     {#if setBinder}
       <div
-        class="flex flex-col bg-slate-800 h-full"
+        class="flex flex-col bg-slate-800 h-full absolute w-full"
         transition:fly={{ y: -70 }}
       >
+        <div class=" w-full h-full flex flex-col">
         <div class="flex-1 items-center p-1">
           <button
             onclick={() => {
@@ -263,18 +290,25 @@
                 </div>
                 <span>TSQ Salem Binder</span>
               </div>
-            </div></button
-          >
+            </div>
+          </button>
         </div>
+          
         {#each stations as station, idx}
           <div class="flex-1 items-center p-2">
             <button
               onclick={() => {
                 stationBinderInt = idx;
                 setBinder = false;
+
+                if(!recipeStationsArr.includes(station.name)){
+                  currentRecipe = null;
+                  searchRecipe = "";
+                  
+                }
               }}
               style={`background-color: ${station.color}; color: ${station.textColor};`}
-              class={`${idx == stationBinderInt ? "border-2 border-white/60" : ""} hover:border-2 border-white/60 w-full h-full items-center flex flex-row`}
+              class={`${recipeStationsArr.includes(station.name) || currentRecipe == null ? "" : "opacity-30"} ${idx == stationBinderInt ? "border-2 border-white/60" : ""} ${currentRecipe == null || recipeStationsArr.includes(station.name) ? "hover:border-2" : ""} w-full h-full items-center flex flex-row`}
             >
               <div class="px-6 text-3xl border-r-2">
                 {station.emoji}
@@ -285,6 +319,7 @@
             </button>
           </div>
         {/each}
+        </div>
       </div>
     {:else if showChecklist}
       <div class="relative w-full h-full overflow-y-auto">
@@ -325,15 +360,15 @@
         </div>
       </div>
     {:else if currentRecipe}
-      <div class="flex bg-slate-400 px-3 py-1 text-sm">
-        <div class="flex flex-1 justify-center">
+      <div class="absolute flex bg-slate-400 px-3 py-1 text-sm w-full">
+        <div class="flex flex-1 justify-center ">
           Created: {currentRecipe.created}
         </div>
         {#if currentRecipe.edited}
           <div class="flex-1">Edited: {currentRecipe?.edited}</div>
         {/if}
       </div>
-      <div class="p-2 flex gap-2 relative overflow-hidden">
+      <div class="p-2 flex gap-2 absolute overflow-hidden w-full mt-[30px]">
         <div
           transition:fly={{ x: -20 }}
           class="flex flex-1 w-full flex-col rounded bg-slate-300 p-4 shadow-md"
@@ -378,6 +413,7 @@
         class="absolute top-0 grid w-full grid-cols-1 gap-1 p-2 px-2 sm:grid-cols-2 md:grid-cols-3"
       >
         {#each shownRecipes as recipe}
+          {#if stationBinderInt < 0 || recipe.ingredients.filter((ing) => ing.station == stationBinderInt).length > 0}
           <button
             class="flex cursor-pointer flex-col items-start rounded bg-slate-200 p-4 text-left hover:bg-slate-300"
             onclick={() => {
@@ -393,8 +429,10 @@
               <div class="flex w-full flex-1 flex-row">
                 <div class="flex flex-1 flex-col items-start w-full mr-1">
                   <ul class="w-full">
-                    {#each recipe.ingredients as ingredient}
+                    {#each recipe.ingredients as ingredient, idx}
+                      {#if stationBinderInt < 0 || ingredient.station == stationBinderInt}
                       <li
+                        transition:fly={{ x: -20, delay: idx * 50 }}
                         class="flex gap-1 my-1 border-b-2 ml-[20px] items-center border-slate-300 relative"
                       >
                         <div
@@ -418,6 +456,7 @@
                           </div>
                         </div>
                       </li>
+                      {/if}
                     {/each}
                   </ul>
                 </div>
@@ -429,6 +468,7 @@
               </div>
             </div>
           </button>
+          {/if}
         {/each}
       </div>
     {/if}
