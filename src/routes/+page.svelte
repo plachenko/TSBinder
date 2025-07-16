@@ -15,11 +15,7 @@
   let setBinder = $state(false);
   let showAllStationIng = $state(false);
 
-  let checklistArr = $state([
-    "opening",
-    "prep",
-    "closing",
-  ]);
+  let checklistArr = $state(["opening", "prep", "closing"]);
   let checklistIdx = $state(0);
 
   let showChecklist = $state(false);
@@ -51,9 +47,11 @@
   }
 
   $effect(() => {
-    if(currentRecipe !== null){
-      recipeStationsArr = currentRecipe.ingredients.map((ing) => stations[ing.station].name).filter(onlyUnique)
-    }else{
+    if (currentRecipe !== null) {
+      recipeStationsArr = currentRecipe.ingredients
+        .map((ing) => stations[ing.station].name)
+        .filter(onlyUnique);
+    } else {
       recipeStationsArr = [];
     }
 
@@ -140,32 +138,37 @@
                     <span>TSQ Salem Binder</span>
                   </div>
                 {:else}
-                <div class="flex">
-                  
-                  <div class="border-r-2 pr-2 mr-2">
-                  {stations[stationBinderInt].emoji} 
-                  </div> 
-                  <span class="underline mr-1 capitalize">{stations[stationBinderInt].name}</span> 
-                  {#if showChecklist}
-                  <span>Checklist</span>
-                  {:else}
-                    Binder
-                  {/if}
-                </div>
+                  <div class="flex">
+                    <div class="border-r-2 pr-2 mr-2">
+                      {stations[stationBinderInt].emoji}
+                    </div>
+                    <span class="underline mr-1 capitalize"
+                      >{stations[stationBinderInt].name}</span
+                    >
+                    {#if showChecklist}
+                      <span>Checklist</span>
+                    {:else}
+                      Binder
+                    {/if}
+                  </div>
                 {/if}
               </button>
             </span>
           {/if}
         </h1>
-        {#if stationBinderInt >= 0}
-        <button class="p-2 mr-2" onclick={() => {showAllStationIng = !showAllStationIng}}>
-
-          {#if showAllStationIng}
-          👁️
-          {:else}
-          👁️‍🗨️
-          {/if}
-        </button>
+        {#if stationBinderInt >= 0 && !setBinder && !showChecklist}
+          <button
+            class="p-2 mr-2"
+            onclick={() => {
+              showAllStationIng = !showAllStationIng;
+            }}
+          >
+            {#if showAllStationIng}
+              👁️
+            {:else}
+              👁️‍🗨️
+            {/if}
+          </button>
         {/if}
         {#if !showAdd && stationBinderInt >= 0 && stations[stationBinderInt].checklist}
           <button
@@ -189,7 +192,7 @@
           </div>
         {/if}
         -->
-        
+
         {#if !setBinder}
           {#if currentRecipe && !showChecklist}
             <div class="flex gap-2 border-t-2 border-white py-1">
@@ -269,56 +272,53 @@
   <div class="relative h-full w-full overflow-y-auto bg-slate-500">
     {#if setBinder}
       <div
-        class="flex flex-col bg-slate-800 h-full absolute w-full"
+        class="flex flex-col bg-slate-800 absolute w-full"
         transition:fly={{ y: -70 }}
       >
-        <div class=" w-full h-full flex flex-col">
-        <div class="flex-1 items-center p-1">
-          <button
-            onclick={() => {
-              stationBinderInt = -1;
-              setBinder = false;
-            }}
-            class={`${stationBinderInt == -1 ? "border-2 border-white/60" : "hover:border-2 border-white/60"} w-full h-full`}
-          >
-            <div>
-              <div class="px-6 text-3xl border-r-2 flex justify-center ">
-                <div
-                  class="flex items-center gap-2 pr-1 mr-1"
-                >
-                  <img src={Logo} alt="Logo" class="size-7 rounded-md" />
-                </div>
-                <span>TSQ Salem Binder</span>
-              </div>
-            </div>
-          </button>
-        </div>
-          
-        {#each stations as station, idx}
-          <div class="flex-1 items-center p-2">
+        <div class="w-full h-full flex flex-col">
+          <div class="flex-1 items-center p-1">
             <button
               onclick={() => {
-                stationBinderInt = idx;
+                stationBinderInt = -1;
                 setBinder = false;
-
-                if(!recipeStationsArr.includes(station.name)){
-                  currentRecipe = null;
-                  searchRecipe = "";
-                  
-                }
               }}
-              style={`background-color: ${station.color}; color: ${station.textColor};`}
-              class={`${recipeStationsArr.includes(station.name) || currentRecipe == null ? "" : "opacity-30"} ${idx == stationBinderInt ? "border-2 border-white/60" : ""} ${currentRecipe == null || recipeStationsArr.includes(station.name) ? "hover:border-2" : ""} w-full h-full items-center flex flex-row`}
+              class={`${stationBinderInt == -1 ? "border-2 border-white/60" : "hover:border-2 border-white/60"} w-full h-full`}
             >
-              <div class="px-6 text-3xl border-r-2">
-                {station.emoji}
-              </div>
-              <div class="flex-1">
-                {station.name.toUpperCase()}
+              <div>
+                <div class="px-6 text-3xl border-r-2 flex justify-center">
+                  <div class="flex items-center gap-2 pr-1 mr-1">
+                    <img src={Logo} alt="Logo" class="size-7 rounded-md" />
+                  </div>
+                  <span>TSQ Salem Binder</span>
+                </div>
               </div>
             </button>
           </div>
-        {/each}
+
+          {#each stations as station, idx}
+            <div class="flex-1 items-center p-2">
+              <button
+                onclick={() => {
+                  stationBinderInt = idx;
+                  setBinder = false;
+
+                  if (!recipeStationsArr.includes(station.name)) {
+                    currentRecipe = null;
+                    searchRecipe = "";
+                  }
+                }}
+                style={`background-color: ${station.color}; color: ${station.textColor};`}
+                class={`${recipeStationsArr.includes(station.name) || currentRecipe == null ? "" : "opacity-30"} ${idx == stationBinderInt ? "border-2 border-white/60" : ""} ${currentRecipe == null || recipeStationsArr.includes(station.name) ? "hover:border-2" : ""} w-full h-full items-center flex flex-row`}
+              >
+                <div class="px-6 text-3xl border-r-2">
+                  {station.emoji}
+                </div>
+                <div class="flex-1">
+                  {station.name.toUpperCase()}
+                </div>
+              </button>
+            </div>
+          {/each}
         </div>
       </div>
     {:else if showChecklist}
@@ -326,7 +326,9 @@
         <div class="bg-slate-200 w-full absolute flex flex-col gap-2 p-2">
           <form>
             {#each Object.keys(PantryChecklist) as checkItem, checkItemIdx}
-              <fieldset class={`border-2 ${checklistIdx !== checkItemIdx ? "hidden" : ""}`}>
+              <fieldset
+                class={`border-2 ${checklistIdx !== checkItemIdx ? "hidden" : ""}`}
+              >
                 {#if checklistIdx !== checkItemIdx}
                   <button
                     class="text-lg font-bold text-slate-600 hover:text-slate-800"
@@ -343,25 +345,53 @@
                 {#each PantryChecklist[checkItem] as item, idx}
                   <div class="flex p-4 bg-slate border-b-2 border-slate-300">
                     {#if checkItemIdx == 1}
-                    <input type="checkbox" style="width: 20px; margin-right: 10px;" id={checklistArr[checklistIdx]+'checkItem_'+idx} name={checklistArr[checklistIdx]+'checkItem_'+idx} value={checkItem}>
-                    <label class="flex-1 " for={checklistArr[checklistIdx]+'checkItem_'+idx}>{item.item}</label>
-                    <input type="range" min="0" max="5" value={item.qty} class="flex-1" id={checklistArr[checklistIdx]+'checkItem_qty_'+idx} name={checklistArr[checklistIdx]+'checkItem_qty_'+idx}>
+                      <input
+                        type="checkbox"
+                        style="width: 20px; margin-right: 10px;"
+                        id={checklistArr[checklistIdx] + "checkItem_" + idx}
+                        name={checklistArr[checklistIdx] + "checkItem_" + idx}
+                        value={checkItem}
+                      />
+                      <label
+                        class="flex-1"
+                        for={checklistArr[checklistIdx] + "checkItem_" + idx}
+                        >{item.item}</label
+                      >
+                      <input
+                        type="range"
+                        min="0"
+                        max="5"
+                        value={item.qty}
+                        class="flex-1"
+                        id={checklistArr[checklistIdx] + "checkItem_qty_" + idx}
+                        name={checklistArr[checklistIdx] +
+                          "checkItem_qty_" +
+                          idx}
+                      />
                     {:else}
-                    <input type="checkbox" style="width: 20px; margin-right: 10px;" id={checklistArr[checklistIdx]+'checkItem_'+idx} name={checklistArr[checklistIdx]+'checkItem_'+idx} value={checkItem}>
-                    <label class="flex-1 " for={checklistArr[checklistIdx]+'checkItem_'+idx}>{item}</label>
-                    {/if}  
+                      <input
+                        type="checkbox"
+                        style="width: 20px; margin-right: 10px;"
+                        id={checklistArr[checklistIdx] + "checkItem_" + idx}
+                        name={checklistArr[checklistIdx] + "checkItem_" + idx}
+                        value={checkItem}
+                      />
+                      <label
+                        class="flex-1"
+                        for={checklistArr[checklistIdx] + "checkItem_" + idx}
+                        >{item}</label
+                      >
+                    {/if}
                   </div>
-
                 {/each}
-            </fieldset>
+              </fieldset>
             {/each}
-
           </form>
         </div>
       </div>
     {:else if currentRecipe}
       <div class="absolute flex bg-slate-400 px-3 py-1 text-sm w-full">
-        <div class="flex flex-1 justify-center ">
+        <div class="flex flex-1 justify-center">
           Created: {currentRecipe.created}
         </div>
         {#if currentRecipe.edited}
@@ -414,60 +444,61 @@
       >
         {#each shownRecipes as recipe}
           {#if stationBinderInt < 0 || recipe.ingredients.filter((ing) => ing.station == stationBinderInt).length > 0}
-          <button
-            class="flex cursor-pointer flex-col items-start rounded bg-slate-200 p-4 text-left hover:bg-slate-300"
-            onclick={() => {
-              currentRecipe = recipe;
-            }}
-          >
-            <div
-              class="mb-3 text-slate-600/80 tracking-wider font-medium w-full text-center text-2xl uppercase"
+            <button
+              class="flex cursor-pointer flex-col items-start rounded bg-slate-200 p-4 text-left hover:bg-slate-300"
+              onclick={() => {
+                currentRecipe = recipe;
+              }}
             >
-              {recipe.title}
-            </div>
-            <div class="flex h-full w-full">
-              <div class="flex w-full flex-1 flex-row">
-                <div class="flex flex-1 flex-col items-start w-full mr-1">
-                  <ul class="w-full">
-                    {#each recipe.ingredients as ingredient, idx}
-                      {#if stationBinderInt < 0 || ingredient.station == stationBinderInt}
-                      <li
-                        transition:fly={{ x: -20, delay: idx * 50 }}
-                        class="flex gap-1 my-1 border-b-2 ml-[20px] items-center border-slate-300 relative"
-                      >
-                        <div
-                          class="bg-red-400 rounded-md absolute left-[-20px] p-1"
-                        >
-                          3
-                        </div>
-                        <div
-                          style={`color: ${stations[ingredient.station].textColor}; background-color: ${stations[ingredient.station].color};`}
-                          class={`text-xs p-1 rounded mb-1 flex w-full`}
-                        >
-                          <div class="flex-1">
-                            <strong class="flex-1">{ingredient.name}</strong>
-                          </div>
-                          <div
-                            class="flex items-center rounded-[3px] px-1 bg-white/20"
+              <div
+                class="mb-3 text-slate-600/80 tracking-wider font-medium w-full text-center text-2xl uppercase"
+              >
+                {recipe.title}
+              </div>
+              <div class="flex h-full w-full">
+                <div class="flex w-full flex-1 flex-row">
+                  <div class="flex flex-1 flex-col items-start w-full mr-1">
+                    <ul class="w-full">
+                      {#each recipe.ingredients as ingredient, idx}
+                        {#if stationBinderInt < 0 || ingredient.station == stationBinderInt || showAllStationIng}
+                          <li
+                            transition:fly={{ x: -20, delay: idx * 50 }}
+                            class="flex gap-1 my-1 border-b-2 ml-[20px] items-center border-slate-300 relative"
                           >
-                            <span>
-                              {ingredient.qty}
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                      {/if}
-                    {/each}
-                  </ul>
+                            <div
+                              class="bg-red-400 rounded-md absolute left-[-20px] p-1"
+                            >
+                              3
+                            </div>
+                            <div
+                              style={`color: ${stations[ingredient.station].textColor}; background-color: ${stations[ingredient.station].color};`}
+                              class={`text-xs p-1 rounded mb-1 flex w-full`}
+                            >
+                              <div class="flex-1">
+                                <strong class="flex-1">{ingredient.name}</strong
+                                >
+                              </div>
+                              <div
+                                class="flex items-center rounded-[3px] px-1 bg-white/20"
+                              >
+                                <span>
+                                  {ingredient.qty}
+                                </span>
+                              </div>
+                            </div>
+                          </li>
+                        {/if}
+                      {/each}
+                    </ul>
+                  </div>
+                </div>
+                <div
+                  class="flex h-full flex-1 items-center justify-center bg-slate-500"
+                >
+                  no image
                 </div>
               </div>
-              <div
-                class="flex h-full flex-1 items-center justify-center bg-slate-500"
-              >
-                no image
-              </div>
-            </div>
-          </button>
+            </button>
           {/if}
         {/each}
       </div>
