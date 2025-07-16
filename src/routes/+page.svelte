@@ -308,13 +308,18 @@
                   }
                 }}
                 style={`background-color: ${station.color}; color: ${station.textColor};`}
-                class={`${recipeStationsArr.includes(station.name) || currentRecipe == null ? "" : "opacity-30"} ${idx == stationBinderInt ? "border-2 border-white/60" : ""} ${currentRecipe == null || recipeStationsArr.includes(station.name) ? "hover:border-2" : ""} w-full h-full items-center flex flex-row`}
+                class={`${recipeStationsArr.includes(station.name) || currentRecipe == null ? "" : "opacity-30"} ${idx == stationBinderInt ? "border-2 border-white/60" : ""} ${currentRecipe == null || recipeStationsArr.includes(station.name) ? "" : ""} box-border w-full h-full items-center flex flex-row`}
               >
                 <div class="px-6 text-3xl border-r-2">
                   {station.emoji}
                 </div>
                 <div class="flex-1">
                   {station.name.toUpperCase()}
+                  {#if currentRecipe && recipeStationsArr.includes(station.name)}
+                  &mdash; <span class="text-slate-400">{currentRecipe.title}</span>
+                  {:else}
+                  Binder
+                  {/if}
                 </div>
               </button>
             </div>
@@ -462,7 +467,7 @@
                       {#each recipe.ingredients as ingredient, idx}
                         {#if stationBinderInt < 0 || ingredient.station == stationBinderInt || showAllStationIng}
                           <li
-                            transition:fly={{ x: -20, delay: idx * 50 }}
+                            transition:fly={{ x: -20, delay: idx * 20 }}
                             class="flex gap-1 my-1 border-b-2 ml-[20px] items-center border-slate-300 relative"
                           >
                             <div
