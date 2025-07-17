@@ -30,6 +30,7 @@
     { name: "Ingredient" },
   ];
 
+  let ingredientsArr = $state([]);
   let recipeStationsArr = $state([]);
 
   let stationBinderInt = $state(-1);
@@ -69,6 +70,11 @@
 
   onMount(() => {
     shownRecipes = recipes;
+    ingredientsArr = recipes
+      .flatMap((recipe) => recipe.ingredients)
+      .map((ingredient) => { return ingredient.name.toLowerCase() })
+      .filter(onlyUnique);
+      console.log("Ingredients Array:", ingredientsArr[1]);
   });
 </script>
 
@@ -114,7 +120,10 @@
                     <img src={Logo} alt="Logo" class="size-7 rounded-md" />
                   {/if}
                 </button>
-                <span>{currentRecipe.title}</span>
+                <span
+                  style={`background-color: ${stations[stationBinderInt]?.color};`}
+                  class="p-1 rounded-md"
+                  >{currentRecipe.title}</span>
               </div>
             </div>
           {:else}
@@ -158,7 +167,7 @@
         </h1>
         {#if stationBinderInt >= 0 && !setBinder && !showChecklist}
           <button
-            class="p-2 mr-2"
+            class={` ${showAllStationIng ? "border-2 border-white" : ""} p-2 mr-2`}
             onclick={() => {
               showAllStationIng = !showAllStationIng;
             }}
@@ -231,7 +240,6 @@
                     {:else}
                       <button
                         onclick={() => {
-                          searchRecipe = "";
                           searchType = (searchType + 1) % searchTypes.length;
                         }}
                         class="p-2">{searchTypes[searchType].name}</button
@@ -272,7 +280,7 @@
   <div class="relative h-full w-full overflow-y-auto bg-slate-500">
     {#if setBinder}
       <div
-        class="flex flex-col bg-slate-800 absolute w-full"
+        class="flex flex-col min-h-full bg-slate-800 absolute w-full"
         transition:fly={{ y: -70 }}
       >
         <div class="w-full h-full flex flex-col">
@@ -289,7 +297,12 @@
                   <div class="flex items-center gap-2 pr-1 mr-1">
                     <img src={Logo} alt="Logo" class="size-7 rounded-md" />
                   </div>
-                  <span>TSQ Salem Binder</span>
+                  <span>TSQ Salem 
+                  {#if currentRecipe && recipeStationsArr.includes(station.name)}
+                  &mdash; <span class="text-slate-400">{currentRecipe.title}</span>
+                  {:else}
+                  Binder
+                  {/if}</span>
                 </div>
               </div>
             </button>
@@ -326,6 +339,37 @@
           {/each}
         </div>
       </div>
+    {:else if searchTypes[searchType].name == "Ingredient"}
+    <div class="absolute bg-slate-200 w-full" transition:fly={{ y: -70 }}>
+      
+      {#each ingredientsArr as ingredient, idx}
+      {#if ingredient.includes(searchRecipe)}
+      <div>
+
+      {ingredient} {idx}
+      </div>
+      {/if}
+      <!--
+          {#if ingredient.name.toLowerCase().includes(searchRecipe) && (stationBinderInt < 0 || ingredient.station == stationBinderInt || showAllStationIng)}
+            <div class="p-1">
+              <button
+                style={`background-color: ${stations[ingredient.station]?.color}; color: ${stations[ingredient.station - 1]?.textColor};`}
+                class="flex items-center justify-between w-full p-2 rounded hover:bg-slate-300"
+                onclick={() => {
+                  searchRecipe = ingredient.name;
+                  currentRecipe = recipe;
+                }}
+              >
+                <div>{stations[ingredient.station]?.emoji}</div>
+                <div class="flex-1 text-left border-l-2 ml-3 pl-3">{ingredient.name}</div>
+              </button>
+            </div>
+          {/if}
+          -->
+      
+      {/each}
+    </div>
+
     {:else if showChecklist}
       <div class="relative w-full h-full overflow-y-auto">
         <div class="bg-slate-200 w-full absolute flex flex-col gap-2 p-2">
