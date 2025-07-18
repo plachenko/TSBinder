@@ -8,6 +8,7 @@
   import { PantryChecklist } from "$lib/assets/pantry";
 
   import { recipes } from "$lib/assets/recipes.js";
+  import HighlightText from "$lib/components/HighlightText.svelte";
 
   let currentRecipe = $state(null);
   let showAdd = $state(false);
@@ -60,12 +61,13 @@
       const searchTerm = searchRecipe;
 
       return (
-        recipe.title.toLowerCase().includes(searchTerm) ||
+        recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         recipe.ingredients.some((ingredient) =>
-          ingredient.name.toLowerCase().includes(searchTerm),
+          ingredient.name.toLowerCase().includes(searchTerm.toLowerCase()),
         )
       );
     });
+    // console.log()
   });
 
   onMount(() => {
@@ -308,12 +310,10 @@
                     >TSQ Salem
                     {#if currentRecipe && recipeStationsArr.includes(station?.name)}
                       &mdash; <span class="text-slate-400"
-                        >{currentRecipe.title}</span
-                      >
+                        >{currentRecipe.title}</span>
                     {:else}
                       Binder
-                    {/if}</span
-                  >
+                    {/if}</span>
                 </div>
               </div>
             </button>
@@ -549,27 +549,12 @@
                             >
                               <div class="flex-1">
                                 <strong class="flex-1 tracking-smaller">
-                                  
-                                  <span class="mr-[-3px]">
-                                  {#if (searchRecipe && searchRecipe != "") && ingredient.name.toLowerCase().includes(searchRecipe.toLowerCase())}
-                                  {ingredient.name.toLowerCase().split(searchRecipe)[0]}
+                                  {#if ingredient.name.toLowerCase().includes(searchRecipe.toLowerCase())}
+                                  <HighlightText text={ingredient.name} search={searchRecipe} />
                                   {:else}
                                   {ingredient.name}
                                   {/if}
-                                  </span>
-                                  
-                                  {#if (searchRecipe && searchRecipe != "") && ingredient.name.toLowerCase().includes(searchRecipe.toLowerCase())}
-                                  <span class="text-slate-200 underline">
-                                  {ingredient.name.toLowerCase().split(searchRecipe)}
-                                  </span>
-                                  
-                                  {/if}
 
-                                  {#if (searchRecipe && searchRecipe != "") && ingredient.name.toLowerCase().includes(searchRecipe.toLowerCase())}
-                                  <span class="ml-[-3px]">
-                                  {ingredient.name.toLowerCase().split(searchRecipe)[1]}
-                                  </span>
-                                  {/if}
                                 </strong>
                               </div>
                               <div
