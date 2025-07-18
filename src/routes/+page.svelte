@@ -262,11 +262,11 @@
                           class="absolute top-1 right-1 size-8 bg-[#CCC]"
                           onclick={() => (searchRecipe = "")}
                           ><div
-                            class="flex h-full w-full items-center justify-center rounded-full bg-slate-300/30 text-black"
+                            class="text-2xl flex h-full w-full items-center justify-center rounded-full bg-slate-300/30 text-black/50 hover:text-black"
                           >
-                            x
-                          </div></button
-                        >
+                            X
+                          </div>
+                          </button>
                       {/if}
                     {/if}
                   </div>
@@ -306,7 +306,7 @@
                   </div>
                   <span
                     >TSQ Salem
-                    {#if currentRecipe && recipeStationsArr.includes(station.name)}
+                    {#if currentRecipe && recipeStationsArr.includes(station?.name)}
                       &mdash; <span class="text-slate-400"
                         >{currentRecipe.title}</span
                       >
@@ -548,8 +548,29 @@
                               class={`text-xs p-1 rounded mb-1 flex w-full`}
                             >
                               <div class="flex-1">
-                                <strong class="flex-1">{ingredient.name}</strong
-                                >
+                                <strong class="flex-1 tracking-smaller">
+                                  
+                                  <span class="mr-[-3px]">
+                                  {#if (searchRecipe && searchRecipe != "") && ingredient.name.toLowerCase().includes(searchRecipe.toLowerCase())}
+                                  {ingredient.name.toLowerCase().split(searchRecipe)[0]}
+                                  {:else}
+                                  {ingredient.name}
+                                  {/if}
+                                  </span>
+                                  
+                                  {#if (searchRecipe && searchRecipe != "") && ingredient.name.toLowerCase().includes(searchRecipe.toLowerCase())}
+                                  <span class="text-slate-200 underline">
+                                  {ingredient.name.toLowerCase().split(searchRecipe)}
+                                  </span>
+                                  
+                                  {/if}
+
+                                  {#if (searchRecipe && searchRecipe != "") && ingredient.name.toLowerCase().includes(searchRecipe.toLowerCase())}
+                                  <span class="ml-[-3px]">
+                                  {ingredient.name.toLowerCase().split(searchRecipe)[1]}
+                                  </span>
+                                  {/if}
+                                </strong>
                               </div>
                               <div
                                 class="flex items-center rounded-[3px] px-1 bg-white/20"
