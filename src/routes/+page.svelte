@@ -72,9 +72,16 @@
     shownRecipes = recipes;
     ingredientsArr = recipes
       .flatMap((recipe) => recipe.ingredients)
-      .map((ingredient) => { return ingredient.name.toLowerCase() })
-      .filter(onlyUnique);
-      console.log("Ingredients Array:", ingredientsArr[1]);
+      .map((ingredient) => {
+        return {
+          name: ingredient.name.toLowerCase(),
+          station: ingredient.station,
+        };
+      })
+      .filter((item, idx, self) => {
+        return self.findIndex((e) => e.name === item.name) === idx;
+      });
+    console.log("Ingredients Array:", ingredientsArr[1]);
   });
 </script>
 
@@ -122,8 +129,8 @@
                 </button>
                 <span
                   style={`background-color: ${stations[stationBinderInt]?.color};`}
-                  class="p-1 rounded-md"
-                  >{currentRecipe.title}</span>
+                  class="p-1 rounded-md">{currentRecipe.title}</span
+                >
               </div>
             </div>
           {:else}
@@ -297,12 +304,16 @@
                   <div class="flex items-center gap-2 pr-1 mr-1">
                     <img src={Logo} alt="Logo" class="size-7 rounded-md" />
                   </div>
-                  <span>TSQ Salem 
-                  {#if currentRecipe && recipeStationsArr.includes(station.name)}
-                  &mdash; <span class="text-slate-400">{currentRecipe.title}</span>
-                  {:else}
-                  Binder
-                  {/if}</span>
+                  <span
+                    >TSQ Salem
+                    {#if currentRecipe && recipeStationsArr.includes(station.name)}
+                      &mdash; <span class="text-slate-400"
+                        >{currentRecipe.title}</span
+                      >
+                    {:else}
+                      Binder
+                    {/if}</span
+                  >
                 </div>
               </div>
             </button>
@@ -329,9 +340,11 @@
                 <div class="flex-1">
                   {station.name.toUpperCase()}
                   {#if currentRecipe && recipeStationsArr.includes(station.name)}
-                  &mdash; <span class="text-slate-400">{currentRecipe.title}</span>
+                    &mdash; <span class="text-slate-400"
+                      >{currentRecipe.title}</span
+                    >
                   {:else}
-                  Binder
+                    Binder
                   {/if}
                 </div>
               </button>
@@ -340,16 +353,29 @@
         </div>
       </div>
     {:else if searchTypes[searchType].name == "Ingredient"}
-    <div class="absolute bg-slate-200 w-full" transition:fly={{ y: -70 }}>
-      
-      {#each ingredientsArr as ingredient, idx}
-      {#if ingredient.includes(searchRecipe)}
-      <div>
-
-      {ingredient} {idx}
-      </div>
-      {/if}
-      <!--
+      <div
+        class="absolute bg-slate-200 w-full p-2 flex flex-col gap-2"
+        transition:fly={{ y: -70 }}
+      >
+        {#each ingredientsArr as ingredient, idx}
+          {#if ingredient.name
+            .toLowerCase()
+            .includes(searchRecipe.toLowerCase())}
+            {#if stationBinderInt < 0 || ingredient.station == stationBinderInt}
+              <button
+                class="p-2 flex-1 w-full text-left"
+                style={`background-color: ${stations[ingredient.station].color}`}
+              >
+                <span class="border-r-2 pr-2 mr-2">
+                  {stations[ingredient.station].emoji}
+                </span>
+                <span>
+                  {ingredient.name}
+                </span>
+              </button>
+            {/if}
+          {/if}
+          <!--
           {#if ingredient.name.toLowerCase().includes(searchRecipe) && (stationBinderInt < 0 || ingredient.station == stationBinderInt || showAllStationIng)}
             <div class="p-1">
               <button
@@ -366,10 +392,8 @@
             </div>
           {/if}
           -->
-      
-      {/each}
-    </div>
-
+        {/each}
+      </div>
     {:else if showChecklist}
       <div class="relative w-full h-full overflow-y-auto">
         <div class="bg-slate-200 w-full absolute flex flex-col gap-2 p-2">
