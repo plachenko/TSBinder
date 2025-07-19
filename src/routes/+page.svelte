@@ -268,7 +268,7 @@
                           >
                             X
                           </div>
-                          </button>
+                        </button>
                       {/if}
                     {/if}
                   </div>
@@ -310,10 +310,12 @@
                     >TSQ Salem
                     {#if currentRecipe && recipeStationsArr.includes(station?.name)}
                       &mdash; <span class="text-slate-400"
-                        >{currentRecipe.title}</span>
+                        >{currentRecipe.title}</span
+                      >
                     {:else}
                       Binder
-                    {/if}</span>
+                    {/if}</span
+                  >
                 </div>
               </div>
             </button>
@@ -526,7 +528,7 @@
               <div
                 class="mb-3 text-slate-600/80 tracking-wider font-medium w-full text-center text-2xl uppercase"
               >
-                {recipe.title}
+                <HighlightText text={recipe.title} search={searchRecipe} />
               </div>
               <div class="flex h-full w-full">
                 <div class="flex w-full flex-1 flex-row">
@@ -549,12 +551,16 @@
                             >
                               <div class="flex-1">
                                 <strong class="flex-1 tracking-smaller">
-                                  {#if ingredient.name.toLowerCase().includes(searchRecipe.toLowerCase())}
-                                  <HighlightText text={ingredient.name} search={searchRecipe} />
+                                  {#if ingredient.name
+                                    .toLowerCase()
+                                    .includes(searchRecipe.toLowerCase())}
+                                    <HighlightText
+                                      text={ingredient.name}
+                                      search={searchRecipe}
+                                    />
                                   {:else}
-                                  {ingredient.name}
+                                    {ingredient.name}
                                   {/if}
-
                                 </strong>
                               </div>
                               <div
