@@ -41,13 +41,6 @@
     searchRecipe = "";
     searchRecipe = transcript ? transcript.toLowerCase().replace(/[\p{P}$+<=>^`|~]/gu, '') : "";
 
-    resultFound = true;
-    console.log(resultFound)
-    /*
-    if (shownRecipes?.length) {
-      currentRecipe = shownRecipes[0];
-    }
-      */
   }
 
   function onlyUnique(value, index, self) {
