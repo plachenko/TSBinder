@@ -67,7 +67,6 @@
         )
       );
     });
-    // console.log()
   });
 
   onMount(() => {
@@ -83,7 +82,6 @@
       .filter((item, idx, self) => {
         return self.findIndex((e) => e.name === item.name) === idx;
       });
-    console.log("Ingredients Array:", ingredientsArr[1]);
   });
 </script>
 
@@ -215,12 +213,12 @@
           {#if currentRecipe && !showChecklist}
             <div class="flex gap-2 border-t-2 border-white py-1">
               <button
-                style="border-color: #971B2F; background-color: #971B2F;"
+                style={`border-color: #971B2F; background-color: ${stations[stationBinderInt]?.color || '#971B2F'};`}
                 class="flex-1 cursor-pointer rounded bg-red-500 p-2 text-white hover:bg-red-600"
                 onclick={() => {
                   currentRecipe = null;
                   searchRecipe = "";
-                }}>Back to Recipes</button
+                }}>Back to {stations[stationBinderInt]?.name || ''} Recipes</button
               >
               <button
                 class="flex-1 cursor-pointer rounded bg-green-500 p-2 text-white hover:bg-green-600"
@@ -256,6 +254,19 @@
                       <input
                         bind:value={searchRecipe}
                         type="text"
+                        autofocus
+                        onkeydown={(e) => {
+                          if (e.key === "Enter") {
+                            searchRecipe = searchRecipe.trim();
+                            if (searchRecipe !== "") {
+                              if(searchTypes[searchType].name == "Recipe") {
+                                currentRecipe = shownRecipes[0];
+                              } else if (searchTypes[searchType].name == "Ingredient") {
+                                console.log('hehe');
+                              }
+                            }
+                          }
+                        }}
                         placeholder={`Search ${searchTypes[searchType].name}s...`}
                         class="w-full rounded border bg-[#CCC] p-2 text-black"
                       />
@@ -308,7 +319,7 @@
                   </div>
                   <span
                     >TSQ Salem
-                    {#if currentRecipe && recipeStationsArr.includes(station?.name)}
+                    {#if currentRecipe}
                       &mdash; <span class="text-slate-400"
                         >{currentRecipe.title}</span
                       >
@@ -330,7 +341,7 @@
 
                   if (!recipeStationsArr.includes(station.name)) {
                     currentRecipe = null;
-                    searchRecipe = "";
+                    // searchRecipe = "";
                   }
                 }}
                 style={`background-color: ${station.color}; color: ${station.textColor};`}
@@ -354,7 +365,9 @@
           {/each}
         </div>
       </div>
-    {:else if searchTypes[searchType].name == "Ingredient"}
+    {:else if searchTypes[searchType].name == "Ingredient" && ingredientsArr.map((ing) => ing.name).some((ing) => ing.toLowerCase().includes(searchRecipe.toLowerCase()))}
+      
+
       <div
         class="absolute bg-slate-200 w-full p-2 flex flex-col gap-2"
         transition:fly={{ y: -70 }}
@@ -363,37 +376,21 @@
           {#if ingredient.name
             .toLowerCase()
             .includes(searchRecipe.toLowerCase())}
-            {#if stationBinderInt < 0 || ingredient.station == stationBinderInt}
+            {#if stationBinderInt < 0 || (ingredient.station == stationBinderInt && !showAllStationIng) || showAllStationIng}
               <button
-                class="p-2 flex-1 w-full text-left"
+                class="p-2 flex-1 w-full text-left flex items-center rounded hover:bg-slate-300"
                 style={`background-color: ${stations[ingredient.station].color}`}
               >
-                <span class="border-r-2 pr-2 mr-2">
+                <span class="border-r-2 pr-2 mr-2 float-left text-2xl">
                   {stations[ingredient.station].emoji}
                 </span>
-                <span>
-                  {ingredient.name}
-                </span>
+                <HighlightText
+                  text={ingredient.name}
+                  search={searchRecipe}
+                />
               </button>
             {/if}
           {/if}
-          <!--
-          {#if ingredient.name.toLowerCase().includes(searchRecipe) && (stationBinderInt < 0 || ingredient.station == stationBinderInt || showAllStationIng)}
-            <div class="p-1">
-              <button
-                style={`background-color: ${stations[ingredient.station]?.color}; color: ${stations[ingredient.station - 1]?.textColor};`}
-                class="flex items-center justify-between w-full p-2 rounded hover:bg-slate-300"
-                onclick={() => {
-                  searchRecipe = ingredient.name;
-                  currentRecipe = recipe;
-                }}
-              >
-                <div>{stations[ingredient.station]?.emoji}</div>
-                <div class="flex-1 text-left border-l-2 ml-3 pl-3">{ingredient.name}</div>
-              </button>
-            </div>
-          {/if}
-          -->
         {/each}
       </div>
     {:else if showChecklist}
@@ -526,9 +523,13 @@
               }}
             >
               <div
-                class="mb-3 text-slate-600/80 tracking-wider font-medium w-full text-center text-2xl uppercase"
+                class="mb-3  justify-center flex text-slate-600/80 tracking-wider font-medium w-full text-center text-2xl uppercase"
               >
-                <HighlightText text={recipe.title} search={searchRecipe} />
+                {#if searchRecipe}
+                  <HighlightText text={recipe.title} search={searchRecipe} />
+                {:else}
+                  {recipe.title}
+                {/if}
               </div>
               <div class="flex h-full w-full">
                 <div class="flex w-full flex-1 flex-row">

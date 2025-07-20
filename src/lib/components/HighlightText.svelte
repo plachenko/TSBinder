@@ -12,48 +12,48 @@
     } else {
       textArray = [originalText];
     }
+
   });
 
-  function splitString(text, search) {
-    const regex = new RegExp(`(${search})`, "gi");
-    return text.split(regex).filter(Boolean);
-  }
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
-  function splitBySearch(str, search) {
-    const searcStr = search.toLowerCase();
-    const index = searcStr.indexOf(search.toLowerCase());
+function splitString(text, search, includeWhitespace = false) {
+  if (search.includes("\\")) return false;
+  const pattern = includeWhitespace
+    ? `(\\s*${search}\\s*)`
+    : `(${search})`;
+  const regex = new RegExp(pattern, "gi"); 
+  return text.split(regex).filter(Boolean);
+}
 
-    console.log(index, search, searcStr);
 
-    if (index === -1) {
-      return [str]; // search string not found
-    }
-
-    const before = str.slice(0, index);
-    const match = search;
-    const after = str.slice(index + search.length);
-
-    console.log([before, match, after]);
-
-    return [before, match, after];
-  }
 </script>
 
 {#each textArray as textPart, idx}
   <span
-    class={`relative float-left inline ${textPart.toLowerCase() == search.toLowerCase() ? "text-slate-700 underline " : ""}`}
+    class={`relative float-left inline ${textPart.toLowerCase() == search.toLowerCase() ? "text-slate-700 " : ""}`}
   >
     {#if textPart.toLowerCase() == search.toLowerCase()}
       <div
-        class="bg-yellow-300/30 z-[0] pl-[2px] pr-[2px] left-[-2px] rounded-md absolute h-full"
+        class="bg-yellow-300/30 border-2 border-yellow-400 z-[0] left-[-2px] rounded-md absolute h-full"
       >
-        <span class="invisible">{textPart} &nbsp;</span>
+        <span class="invisible">{textPart}</span>
+      {@html "&nbsp;"}
       </div>
     {/if}
-    <span class="z-[10]">
+    <span class="z-[10] whitespace-break-spaces">
+      <!--
+      {#if textPart[0] == " "}
+      {@html "&nbsp;"}
+      {:else}
+      {textPart}
+      {/if}
+      -->
       {textPart}
     </span>
-  </span>
+    </span>
 {/each}
 
 <!--
