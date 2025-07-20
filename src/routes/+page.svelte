@@ -23,6 +23,7 @@
 
   let shownRecipes = $state([]);
   let speechComp = $state(null);
+  let resultFound = $state(false);
   let searchType = $state(0);
 
   let searchTypes = [
@@ -37,11 +38,16 @@
   let stationBinderInt = $state(-1);
 
   function handleSpeech(transcript) {
-    searchRecipe = transcript.toLowerCase();
+    searchRecipe = "";
+    searchRecipe = transcript ? transcript.toLowerCase().replace(/[\p{P}$+<=>^`|~]/gu, '') : "";
 
+    resultFound = true;
+    console.log(resultFound)
+    /*
     if (shownRecipes?.length) {
       currentRecipe = shownRecipes[0];
     }
+      */
   }
 
   function onlyUnique(value, index, self) {
@@ -284,7 +290,7 @@
                   </div>
 
                   {#if !showChecklist}
-                    <SpeechRecognition bind:this={speechComp} {handleSpeech} />
+                    <SpeechRecognition bind:this={speechComp} {handleSpeech} {resultFound} />
                   {/if}
                 </div>
 
@@ -308,7 +314,7 @@
               onclick={() => {
                 stationBinderInt = -1;
                 setBinder = false;
-              }}
+              }} 
               class={`${stationBinderInt == -1 ? "border-2 border-white/60" : "hover:border-2 border-white/60"} w-full h-full`}
             >
               <div>

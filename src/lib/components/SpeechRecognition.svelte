@@ -1,11 +1,18 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 
-	let { handleSpeech, setListen } = $props();
+	let { handleSpeech, setListen, resultFound } = $props();
 
 	let recognition;
 	let isListening = $state(false);
 	let transcript = '';
+
+	$effect(() => {
+		if (resultFound) {
+			isListening = false;
+			recognition.stop();
+		}
+	});
 
 	onMount(() => {
 		if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -16,20 +23,24 @@
 		const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 		recognition = new SpeechRecognition();
 		recognition.continuous = false;
-		recognition.interimResults = false;
+		recognition.interimResults = true;
 		recognition.lang = 'en-US';
+
+		console.log(recognition);
 
 		recognition.onresult = (event) => {
 			console.log(event);
 			transcript = event.results[event.results.length - 1][0].transcript.trim();
+		
+			handleSpeech(transcript);
 		};
 
 		recognition.onstart = () => {
-			console.log('handling...');
+			transcript = '';
+			// console.log('handling...');
 		};
 
 		recognition.onend = () => {
-			console.log('ending.', transcript);
 			handleSpeech(transcript);
 			isListening = false;
 		};

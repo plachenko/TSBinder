@@ -24,7 +24,7 @@ export let recipes = [
 			created: '2023-05-15'
 		},
 		{
-			title: 'Ceasar Salad',
+			title: 'Caesar Salad',
 			ingredients: [
 				{ name: 'romaine lettuce', qty: '9 oz', station: 1 },
 				{ name: 'Parmesan cheese', qty: 'yellow scoop', station: 1 },
