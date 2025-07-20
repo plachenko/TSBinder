@@ -113,24 +113,23 @@
               class="flex absolute w-full left-0 top-[-15px] justify-center"
               transition:fly={{ y: -20 }}
             >
-              <div class=" h-full flex gap-2 relative">
+              <div class="h-full flex gap-2 relative w-full justify-center">
                 <button
                   style={`background-color: ${stations[stationBinderInt]?.color};`}
                   onclick={() => {
                     setBinder = !setBinder;
                   }}
-                  class="p-1 absolute top-[-5px] left-[-50px] border-2 border-white/70"
+                  class="p-1 absolute top-[-11px] gap-2 items-center flex border-2 border-white/70 flex"
                 >
                   {#if stationBinderInt >= 0}
                     {stations[stationBinderInt]?.emoji}
                   {:else}
                     <img src={Logo} alt="Logo" class="size-7 rounded-md" />
                   {/if}
+                <div
+                  style={`background-color: ${stations[stationBinderInt]?.color || 'rgba(250,250,250,.2)'};`}
+                  class="p-1 rounded-md flex-1">{currentRecipe.title}</div>
                 </button>
-                <span
-                  style={`background-color: ${stations[stationBinderInt]?.color};`}
-                  class="p-1 rounded-md">{currentRecipe.title}</span
-                >
               </div>
             </div>
           {:else}
@@ -313,14 +312,14 @@
               class={`${stationBinderInt == -1 ? "border-2 border-white/60" : "hover:border-2 border-white/60"} w-full h-full`}
             >
               <div>
-                <div class="px-6 text-3xl border-r-2 flex justify-center">
+                <div class="px-6 text-3xl border-r-2 flex justify-center py-2">
                   <div class="flex items-center gap-2 pr-1 mr-1">
                     <img src={Logo} alt="Logo" class="size-7 rounded-md" />
                   </div>
                   <span
                     >TSQ Salem
                     {#if currentRecipe}
-                      &mdash; <span class="text-slate-400"
+                        <span  class="bg-white/20 rounded-md text-white px-2 py-0"
                         >{currentRecipe.title}</span
                       >
                     {:else}
@@ -345,7 +344,7 @@
                   }
                 }}
                 style={`background-color: ${station.color}; color: ${station.textColor};`}
-                class={`${recipeStationsArr.includes(station.name) || currentRecipe == null ? "" : "opacity-30"} ${idx == stationBinderInt ? "border-2 border-white/60" : ""} ${currentRecipe == null || recipeStationsArr.includes(station.name) ? "" : ""} box-border w-full h-full items-center flex flex-row`}
+                class={`p-1 ${recipeStationsArr.includes(station.name) || currentRecipe == null ? "" : "opacity-30"} ${idx == stationBinderInt ? "border-2 border-white/60" : ""} ${currentRecipe == null || recipeStationsArr.includes(station.name) ? "" : ""} box-border w-full h-full items-center flex flex-row`}
               >
                 <div class="px-6 text-3xl border-r-2">
                   {station.emoji}
@@ -353,9 +352,9 @@
                 <div class="flex-1">
                   {station.name.toUpperCase()}
                   {#if currentRecipe && recipeStationsArr.includes(station.name)}
-                    &mdash; <span class="text-slate-400"
-                      >{currentRecipe.title}</span
-                    >
+                        <span  class="bg-white/20 rounded-md text-white px-2 py-0"
+                        >{currentRecipe.title}</span
+                      >
                   {:else}
                     Binder
                   {/if}
