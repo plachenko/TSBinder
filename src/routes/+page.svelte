@@ -26,6 +26,8 @@
   let resultFound = $state(false);
   let searchType = $state(0);
 
+  let addOption = $state("");
+
   let searchTypes = [
     { name: "Recipe" },
     // { name: "Station"},
@@ -48,6 +50,11 @@
   }
 
   $effect(() => {
+    
+    if(!showAdd){
+      addOption = "";
+    }
+
     if (currentRecipe !== null) {
       recipeStationsArr = currentRecipe.ingredients
         .map((ing) => stations[ing.station].name)
@@ -99,6 +106,7 @@
               setBinder = false;
               searchRecipe = "";
               stationBinderInt = -1;
+              showAdd = false;
               showChecklist = false;
             }}
             class="flex items-center bg-[rgba(41,40,40,0.99)]"
@@ -143,6 +151,7 @@
                   `}
                 onclick={() => {
                   setBinder = !setBinder;
+                  showAdd = false;
                 }}
                 class="p-2 border-2 border-white/70 bg-[#971B2F] text-white rounded"
               >
@@ -194,18 +203,11 @@
             }}>📝</button
           >
         {/if}
+        <button onclick={() => showAdd = !showAdd} class={`p-1 text-3xl mr-1 flex items-center justify-center ${showAdd ? "border-2 border-white" : ""}`}>
+          +
+        </button>
       </div>
       <div>
-        <!--
-        -- TODO Possibly remove this.
-        {#if showAdd}
-          <div class="flex flex-col gap-2">
-            {#each ["recipe", "station", "ingredient"] as option}
-              <button class="py-2">Add a {option}</button>
-            {/each}
-          </div>
-        {/if}
-        -->
 
         {#if !setBinder}
           {#if currentRecipe && !showChecklist}
@@ -364,8 +366,6 @@
         </div>
       </div>
     {:else if searchTypes[searchType].name == "Ingredient" && ingredientsArr.map((ing) => ing.name).some((ing) => ing.toLowerCase().includes(searchRecipe.toLowerCase()))}
-      
-
       <div
         class="absolute bg-slate-200 w-full p-2 flex flex-col gap-2"
         transition:fly={{ y: -70 }}
@@ -459,6 +459,17 @@
           </form>
         </div>
       </div>
+    {:else if showAdd}
+    
+      {#if addOption == "station"}
+        <div>station</div>
+      {:else}
+      <div transition:fly={{ y: 20 }} class="absolute w-full flex flex-col p-3 gap-2 h-full justify-center">
+        {#each ["station", "recipe", "ingredient"] as option, idx}
+          <button class="hover:opacity-60 py-2 flex-1" onclick={() => addOption = option}>Add a{idx == 2 ? "n" : ""} {option}</button>
+        {/each}
+      </div>
+      {/if}
     {:else if currentRecipe}
       <div class="absolute flex bg-slate-400 px-3 py-1 text-sm w-full">
         <div class="flex flex-1 justify-center">
