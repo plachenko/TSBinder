@@ -119,7 +119,7 @@
                     setBinder = !setBinder;
                   }}
                   class="p-1 absolute top-[-11px] gap-2 items-center flex border-2 border-white/70 flex"
-                >
+                  >
                   {#if stationBinderInt >= 0}
                     {stations[stationBinderInt]?.emoji}
                   {:else}
@@ -376,7 +376,7 @@
             .includes(searchRecipe.toLowerCase())}
             {#if stationBinderInt < 0 || (ingredient.station == stationBinderInt && !showAllStationIng) || showAllStationIng}
               <button
-                class="p-2 flex-1 w-full text-left flex items-center rounded hover:bg-slate-300"
+                class="p-2 flex-1 w-full text-left flex items-center rounded hover:opacity-60"
                 style={`background-color: ${stations[ingredient.station].color}`}
               >
                 <span class="border-r-2 pr-2 mr-2 float-left text-2xl">

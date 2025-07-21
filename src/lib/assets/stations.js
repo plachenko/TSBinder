@@ -23,19 +23,19 @@ export let stations = [
 		{
 			name: 'grill',
 			emoji: '♨️',
-			color: '#795548', // Dark brown (grill marks)
+			color: 'rgba(121, 85, 72, 1)', // Dark brown (grill marks)
 			textColor: '#FFFFFF' // White text
 		},
 		{
 			name: 'fryer',
 			emoji: '🍟',
-			color: '#FFC107', // Golden yellow (fried food)
+			color: 'rgba(255, 193, 7, 1)', // Golden yellow (fried food)
 			textColor: '#000000' // Black text
 		},
 		{
 			name: 'saute',
 			emoji: '🍳',
-			color: '#9C27B0', // Purple (distinct from other stations)
+			color: 'rgba(156, 39, 176, 1)', // Purple (distinct from other stations)
 			textColor: '#FFFFFF' // White text
 		}
 	];
