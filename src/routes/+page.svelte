@@ -4,6 +4,7 @@
   import SpeechRecognition from "$lib/components/SpeechRecognition.svelte";
   import { stations } from "$lib/assets/stations";
   import { fly } from "svelte/transition";
+  import AddForm from "$lib/components/AddForm.svelte";
 
   import { PantryChecklist } from "$lib/assets/pantry";
 
@@ -462,7 +463,7 @@
     {:else if showAdd}
     
       {#if addOption == "station"}
-        <div>station</div>
+        <AddForm />
       {:else}
       <div transition:fly={{ y: 20 }} class="absolute w-full flex flex-col p-3 gap-2 h-full justify-center">
         {#each ["station", "recipe", "ingredient"] as option, idx}
