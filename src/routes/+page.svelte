@@ -42,8 +42,9 @@
 
   function handleSpeech(transcript) {
     searchRecipe = "";
-    searchRecipe = transcript ? transcript.toLowerCase().replace(/[\p{P}$+<=>^`|~]/gu, '') : "";
-
+    searchRecipe = transcript
+      ? transcript.toLowerCase().replace(/[\p{P}$+<=>^`|~]/gu, "")
+      : "";
   }
 
   function onlyUnique(value, index, self) {
@@ -51,8 +52,7 @@
   }
 
   $effect(() => {
-    
-    if(!showAdd){
+    if (!showAdd) {
       addOption = "";
     }
 
@@ -89,6 +89,15 @@
       .filter((item, idx, self) => {
         return self.findIndex((e) => e.name === item.name) === idx;
       });
+    window.addEventListener("keyup", (e) => {
+      console.log(e.key);
+      if (e.key == "Backspace") {
+        if (currentRecipe) {
+          currentRecipe = null;
+          searchRecipe = "";
+        }
+      }
+    });
   });
 </script>
 
@@ -128,15 +137,18 @@
                     setBinder = !setBinder;
                   }}
                   class="p-1 absolute top-[-11px] gap-2 items-center flex border-2 border-white/70 flex"
-                  >
+                >
                   {#if stationBinderInt >= 0}
                     {stations[stationBinderInt]?.emoji}
                   {:else}
                     <img src={Logo} alt="Logo" class="size-7 rounded-md" />
                   {/if}
-                <div
-                  style={`background-color: ${stations[stationBinderInt]?.color || 'rgba(250,250,250,.2)'};`}
-                  class="p-1 rounded-md flex-1">{currentRecipe.title}</div>
+                  <div
+                    style={`background-color: ${stations[stationBinderInt]?.color || "rgba(250,250,250,.2)"};`}
+                    class="p-1 rounded-md flex-1"
+                  >
+                    {currentRecipe.title}
+                  </div>
                 </button>
               </div>
             </div>
@@ -204,22 +216,25 @@
             }}>📝</button
           >
         {/if}
-        <button onclick={() => showAdd = !showAdd} class={`p-1 text-3xl mr-1 flex items-center justify-center ${showAdd ? "border-2 border-white" : ""}`}>
+        <button
+          onclick={() => (showAdd = !showAdd)}
+          class={`p-1 text-3xl mr-1 flex items-center justify-center ${showAdd ? "border-2 border-white" : ""}`}
+        >
           +
         </button>
       </div>
       <div>
-
         {#if !setBinder}
           {#if currentRecipe && !showChecklist}
             <div class="flex gap-2 border-t-2 border-white py-1">
               <button
-                style={`border-color: #971B2F; background-color: ${stations[stationBinderInt]?.color || '#971B2F'};`}
+                style={`border-color: #971B2F; background-color: ${stations[stationBinderInt]?.color || "#971B2F"};`}
                 class="flex-1 cursor-pointer rounded bg-red-500 p-2 text-white hover:bg-red-600"
                 onclick={() => {
                   currentRecipe = null;
                   searchRecipe = "";
-                }}>Back to {stations[stationBinderInt]?.name || ''} Recipes</button
+                }}
+                >Back to {stations[stationBinderInt]?.name || ""} Recipes</button
               >
               <button
                 class="flex-1 cursor-pointer rounded bg-green-500 p-2 text-white hover:bg-green-600"
@@ -260,10 +275,12 @@
                           if (e.key === "Enter") {
                             searchRecipe = searchRecipe.trim();
                             if (searchRecipe !== "") {
-                              if(searchTypes[searchType].name == "Recipe") {
+                              if (searchTypes[searchType].name == "Recipe") {
                                 currentRecipe = shownRecipes[0];
-                              } else if (searchTypes[searchType].name == "Ingredient") {
-                                console.log('hehe');
+                              } else if (
+                                searchTypes[searchType].name == "Ingredient"
+                              ) {
+                                console.log("hehe");
                               }
                             }
                           }
@@ -286,7 +303,11 @@
                   </div>
 
                   {#if !showChecklist}
-                    <SpeechRecognition bind:this={speechComp} {handleSpeech} {resultFound} />
+                    <SpeechRecognition
+                      bind:this={speechComp}
+                      {handleSpeech}
+                      {resultFound}
+                    />
                   {/if}
                 </div>
 
@@ -310,7 +331,7 @@
               onclick={() => {
                 stationBinderInt = -1;
                 setBinder = false;
-              }} 
+              }}
               class={`${stationBinderInt == -1 ? "border-2 border-white/60" : "hover:border-2 border-white/60"} w-full h-full`}
             >
               <div>
@@ -321,7 +342,7 @@
                   <span
                     >TSQ Salem
                     {#if currentRecipe}
-                        <span  class="bg-white/20 rounded-md text-white px-2 py-0"
+                      <span class="bg-white/20 rounded-md text-white px-2 py-0"
                         >{currentRecipe.title}</span
                       >
                     {:else}
@@ -354,9 +375,9 @@
                 <div class="flex-1">
                   {station.name.toUpperCase()}
                   {#if currentRecipe && recipeStationsArr.includes(station.name)}
-                        <span  class="bg-white/20 rounded-md text-white px-2 py-0"
-                        >{currentRecipe.title}</span
-                      >
+                    <span class="bg-white/20 rounded-md text-white px-2 py-0"
+                      >{currentRecipe.title}</span
+                    >
                   {:else}
                     Binder
                   {/if}
@@ -366,7 +387,9 @@
           {/each}
         </div>
       </div>
-    {:else if searchTypes[searchType].name == "Ingredient" && ingredientsArr.map((ing) => ing.name).some((ing) => ing.toLowerCase().includes(searchRecipe.toLowerCase()))}
+    {:else if searchTypes[searchType].name == "Ingredient" && ingredientsArr
+        .map((ing) => ing.name)
+        .some((ing) => ing.toLowerCase().includes(searchRecipe.toLowerCase()))}
       <div
         class="absolute bg-slate-200 w-full p-2 flex flex-col gap-2"
         transition:fly={{ y: -70 }}
@@ -383,10 +406,7 @@
                 <span class="border-r-2 pr-2 mr-2 float-left text-2xl">
                   {stations[ingredient.station].emoji}
                 </span>
-                <HighlightText
-                  text={ingredient.name}
-                  search={searchRecipe}
-                />
+                <HighlightText text={ingredient.name} search={searchRecipe} />
               </button>
             {/if}
           {/if}
@@ -461,15 +481,23 @@
         </div>
       </div>
     {:else if showAdd}
-    
       {#if addOption == "station"}
-        <AddForm />
+        <div class="bg-red-300 absolute w-full">
+          <AddForm />
+        </div>
       {:else}
-      <div transition:fly={{ y: 20 }} class="absolute w-full flex flex-col p-3 gap-2 h-full justify-center">
-        {#each ["station", "recipe", "ingredient"] as option, idx}
-          <button class="hover:opacity-60 py-2 flex-1" onclick={() => addOption = option}>Add a{idx == 2 ? "n" : ""} {option}</button>
-        {/each}
-      </div>
+        <div
+          transition:fly={{ y: 20 }}
+          class="absolute w-full flex flex-col p-3 gap-2 h-full justify-center"
+        >
+          {#each ["station", "recipe", "ingredient"] as option, idx}
+            <button
+              class="hover:opacity-60 py-2 flex-1"
+              onclick={() => (addOption = option)}
+              >Add a{idx == 2 ? "n" : ""} {option}</button
+            >
+          {/each}
+        </div>
       {/if}
     {:else if currentRecipe}
       <div class="absolute flex bg-slate-400 px-3 py-1 text-sm w-full">
@@ -533,7 +561,7 @@
               }}
             >
               <div
-                class="mb-3  justify-center flex text-slate-600/80 tracking-wider font-medium w-full text-center text-2xl uppercase"
+                class="mb-3 justify-center flex text-slate-600/80 tracking-wider font-medium w-full text-center text-2xl uppercase"
               >
                 {#if searchRecipe}
                   <HighlightText text={recipe.title} search={searchRecipe} />
