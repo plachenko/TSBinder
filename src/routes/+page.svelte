@@ -77,6 +77,7 @@
   });
 
   onMount(() => {
+    console.log("hi");
     shownRecipes = recipes;
     ingredientsArr = recipes
       .flatMap((recipe) => recipe.ingredients)
@@ -260,7 +261,7 @@
                           >
                         {/each}
                       </div>
-                    {:else}
+                    {:else if !showAdd}
                       <button
                         onclick={() => {
                           searchType = (searchType + 1) % searchTypes.length;
@@ -302,7 +303,7 @@
                     {/if}
                   </div>
 
-                  {#if !showChecklist}
+                  {#if !showChecklist && !showAdd}
                     <SpeechRecognition
                       bind:this={speechComp}
                       {handleSpeech}
